@@ -1,0 +1,27 @@
+.DS_Store
+
+# Python
+server/python/.venv/
+**/__pycache__/
+*.pyc
+
+# Local model weights / caches (keep repo small + avoid accidental large files)
+models/
+**/*.gguf
+**/*.safetensors
+**/*.bin
+**/.cache/
+
+# Logs
+*.log
+
+# Xcode / Swift
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcodeproj/*/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Build artifacts
+.build/
+dist/
