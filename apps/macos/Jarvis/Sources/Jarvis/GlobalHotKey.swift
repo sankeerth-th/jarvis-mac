@@ -23,7 +23,8 @@ final class GlobalHotKey {
         GlobalHotKey.handlers[self.id] = handler
     }
 
-    func register() {
+    @discardableResult
+    func register() -> Bool {
         var eventType = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
 
         InstallEventHandler(GetApplicationEventTarget(), { _, event, _ in
@@ -35,7 +36,8 @@ final class GlobalHotKey {
         }, 1, &eventType, nil, nil)
 
         var hotKeyID = EventHotKeyID(signature: OSType(UInt32(truncatingIfNeeded: 0x4A525653)), id: id) // 'JRVS'
-        RegisterEventHotKey(keyCode, modifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
+        let status = RegisterEventHotKey(keyCode, modifiers, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef)
+        return status == noErr
     }
 
     func unregister() {

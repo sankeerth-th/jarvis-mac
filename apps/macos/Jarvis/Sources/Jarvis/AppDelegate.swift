@@ -28,10 +28,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setupHotKey() {
-        hotkey = GlobalHotKey(keyCode: kVK_ANSI_J, modifiers: [.command]) { [weak self] in
+        // Default shortcut: ⌘⌥J (Cmd+Option+J)
+        // ⌘J is commonly taken by other apps; we can make this user-configurable next.
+        hotkey = GlobalHotKey(keyCode: kVK_ANSI_J, modifiers: [.command, .option]) { [weak self] in
             self?.openJarvis()
         }
-        hotkey?.register()
+        if hotkey?.register() != true {
+            NSLog("⚠️ Failed to register global hotkey. It may be in use by another app.")
+        }
     }
 
     @objc private func toggleJarvis() {
