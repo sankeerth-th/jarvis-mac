@@ -2,9 +2,11 @@ import Foundation
 import Speech
 import AVFoundation
 
-/// Placeholder STT implementation.
-/// IMPORTANT: Apple Speech may require network depending on device/settings.
-/// For guaranteed offline for all users, replace with whisper.cpp integration.
+/// Placeholder STT implementation for macOS.
+/// IMPORTANT:
+/// - Apple Speech recognition may use network depending on system settings.
+/// - For guaranteed offline voice for all users, replace with whisper.cpp.
+@MainActor
 final class SpeechToTextController {
     private let recognizer = SFSpeechRecognizer()
     private let audioEngine = AVAudioEngine()
@@ -19,7 +21,7 @@ final class SpeechToTextController {
                 return
             }
 
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.startInternal(completion: completion)
             }
         }
@@ -27,15 +29,6 @@ final class SpeechToTextController {
 
     private func startInternal(completion: @escaping (Result<String, Error>) -> Void) {
         stop()
-
-        let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(.record, mode: .measurement, options: [.duckOthers])
-            try session.setActive(true, options: .notifyOthersOnDeactivation)
-        } catch {
-            completion(.failure(error))
-            return
-        }
 
         let req = SFSpeechAudioBufferRecognitionRequest()
         req.shouldReportPartialResults = false
@@ -68,7 +61,8 @@ final class SpeechToTextController {
         }
 
         // Auto-stop after a short window (push-to-talk behavior). Adjust as desired.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 6_000_000_000)
             if self.audioEngine.isRunning {
                 self.stop()
             }
@@ -86,7 +80,5 @@ final class SpeechToTextController {
             audioEngine.stop()
             audioEngine.inputNode.removeTap(onBus: 0)
         }
-
-        try? AVAudioSession.sharedInstance().setActive(false)
     }
 }

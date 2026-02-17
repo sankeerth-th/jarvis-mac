@@ -3,8 +3,9 @@ import Carbon
 
 /// Minimal Carbon global hotkey wrapper.
 /// Works for ⌘J even when the app is not focused.
+@MainActor
 final class GlobalHotKey {
-    private var hotKeyRef: EventHotKeyRef?
+    nonisolated(unsafe) private var hotKeyRef: EventHotKeyRef?
     private let keyCode: UInt32
     private let modifiers: UInt32
     private let handler: () -> Void
@@ -47,8 +48,10 @@ final class GlobalHotKey {
         GlobalHotKey.handlers[id] = nil
     }
 
-    deinit {
-        unregister()
+    nonisolated deinit {
+        if let ref = hotKeyRef {
+            UnregisterEventHotKey(ref)
+        }
     }
 
     private static func carbonFlags(from flags: NSEvent.ModifierFlags) -> UInt32 {

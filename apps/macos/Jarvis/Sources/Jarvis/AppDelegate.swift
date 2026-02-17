@@ -2,6 +2,7 @@ import Cocoa
 import SwiftUI
 import Carbon
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var hotkey: GlobalHotKey?
@@ -30,7 +31,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupHotKey() {
         // Default shortcut: ⌘⌥J (Cmd+Option+J)
         // ⌘J is commonly taken by other apps; we can make this user-configurable next.
-        hotkey = GlobalHotKey(keyCode: kVK_ANSI_J, modifiers: [.command, .option]) { [weak self] in
+        hotkey = GlobalHotKey(keyCode: UInt32(kVK_ANSI_J), modifiers: [.command, .option]) { [weak self] in
             self?.openJarvis()
         }
         if hotkey?.register() != true {
@@ -43,7 +44,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openJarvis() {
-        panelController.showAndListen()
+        Task { @MainActor in
+            panelController.showAndListen()
+        }
     }
 
     @objc private func quit() {
