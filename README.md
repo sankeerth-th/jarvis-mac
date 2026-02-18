@@ -49,7 +49,7 @@ Engine runs on: `http://127.0.0.1:8787`
 
 Open `apps/macos/Jarvis` in **Xcode** (required for macOS apps), build and run.
 
-- Press **⌘J** to open Jarvis
+- Press **⌘⌥J** (Cmd+Option+J) to open Jarvis
 - v1 behavior: **opens and starts listening immediately**
 
 ## Permissions & Safety

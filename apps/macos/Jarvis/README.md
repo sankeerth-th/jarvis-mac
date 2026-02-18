@@ -4,7 +4,7 @@ Siri-like local assistant UI.
 
 ## v1 goals
 - Menu bar app
-- Global hotkey: **⌘J**
+- Global hotkey: **⌘⌥J** (Cmd+Option+J)
 - On hotkey: show floating panel **and start listening immediately** (push-to-talk v1 = hotkey initiates recording)
 - User-selected folders indexing (Desktop/Downloads/Documents) **only**
 - No iCloud Drive in v1
