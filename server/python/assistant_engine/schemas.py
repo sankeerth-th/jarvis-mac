@@ -5,6 +5,8 @@ class GenerateRequest(BaseModel):
     prompt: str
     max_tokens: int = 256
     temperature: float = 0.7
+    provider: str = "mlx"  # mlx | ollama
+    model: str = ""  # provider-specific model id/name
 
 class GenerateResponse(BaseModel):
     text: str
@@ -12,12 +14,16 @@ class GenerateResponse(BaseModel):
 class SummarizeRequest(BaseModel):
     text: str
     style: Literal["bullets", "meeting", "tldr"] = "bullets"
+    provider: str = "mlx"
+    model: str = ""
 
 class SummarizeResponse(BaseModel):
     summary: str
 
 class EmojiRewriteRequest(BaseModel):
     text: str
+    provider: str = "mlx"
+    model: str = ""
 
 class EmojiRewriteResponse(BaseModel):
     rewritten: str

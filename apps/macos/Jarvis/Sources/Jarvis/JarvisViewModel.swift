@@ -8,6 +8,14 @@ final class JarvisViewModel: ObservableObject {
     @Published var isListening: Bool = false
 
     private let engine = LocalAssistantEngineClient(baseURL: URL(string: "http://127.0.0.1:8787")!)
+
+    private var provider: String {
+        UserDefaults.standard.string(forKey: "jarvis.modelProvider") ?? "mlx"
+    }
+
+    private var modelName: String {
+        UserDefaults.standard.string(forKey: "jarvis.modelName") ?? ""
+    }
     private let stt = SpeechToTextController()
 
     func startListening() {
@@ -49,13 +57,13 @@ final class JarvisViewModel: ObservableObject {
             // Simple routing v1: if user says summarize, hit summarize; else generate.
             if q.lowercased().hasPrefix("summarize") {
                 let text = q.replacingOccurrences(of: "summarize", with: "", options: .caseInsensitive)
-                let summary = try await engine.summarize(text: text)
+                let summary = try await engine.summarize(text: text, provider: provider, model: modelName)
                 responseText = summary
             } else if q.lowercased().contains("emoji") {
-                let rewritten = try await engine.emojiRewrite(text: q)
+                let rewritten = try await engine.emojiRewrite(text: q, provider: provider, model: modelName)
                 responseText = rewritten
             } else {
-                let out = try await engine.generate(prompt: q)
+                let out = try await engine.generate(prompt: q, provider: provider, model: modelName)
                 responseText = out
             }
         } catch {

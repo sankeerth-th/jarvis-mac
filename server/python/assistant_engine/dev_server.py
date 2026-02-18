@@ -12,7 +12,7 @@ from .schemas import (
     TriageResponse,
     TriageItem,
 )
-from .llm import generate_text
+from .providers import generate
 
 app = FastAPI(title="Mac LLM Assistant Engine", version="0.1.0")
 
@@ -31,7 +31,7 @@ def health():
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest):
-    text = generate_text(req.prompt, max_tokens=req.max_tokens, temperature=req.temperature)
+    text = generate(req.provider, req.model, req.prompt, max_tokens=req.max_tokens, temperature=req.temperature)
     return {"text": text}
 
 @app.post("/summarize", response_model=SummarizeResponse)
@@ -41,7 +41,7 @@ def summarize(req: SummarizeRequest):
         "Prefer bullet points. If there are action items, include an 'Action Items' section.\n\n"
         f"TEXT:\n{req.text}\n"
     )
-    summary = generate_text(prompt, max_tokens=300, temperature=0.2)
+    summary = generate(req.provider, req.model, prompt, max_tokens=300, temperature=0.2)
     return {"summary": summary}
 
 @app.post("/emoji-rewrite", response_model=EmojiRewriteResponse)
@@ -51,7 +51,7 @@ def emoji_rewrite(req: EmojiRewriteRequest):
         "Do not change meaning.\n\n"
         f"TEXT:\n{req.text}\n"
     )
-    rewritten = generate_text(prompt, max_tokens=300, temperature=0.5)
+    rewritten = generate(req.provider, req.model, prompt, max_tokens=300, temperature=0.5)
     return {"rewritten": rewritten}
 
 @app.post("/triage", response_model=TriageResponse)
