@@ -63,7 +63,8 @@ final class JarvisViewModel: ObservableObject {
                 let rewritten = try await engine.emojiRewrite(text: q, provider: provider, model: modelName)
                 responseText = rewritten
             } else {
-                let out = try await engine.generate(prompt: q, provider: provider, model: modelName)
+                // Default: use /chat which can call tools.
+                let out = try await engine.chat(prompt: q, provider: provider, model: modelName)
                 responseText = out
             }
         } catch {

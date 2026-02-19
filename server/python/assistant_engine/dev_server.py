@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,6 +14,7 @@ from .schemas import (
     TriageItem,
 )
 from .providers import generate
+from .router import handle
 
 app = FastAPI(title="Mac LLM Assistant Engine", version="0.1.0")
 
@@ -79,6 +81,14 @@ def triage(req: TriageRequest):
         )
 
     return TriageResponse(items=out)
+
+
+@app.post("/chat")
+def chat(req: GenerateRequest):
+    # Reuse GenerateRequest for now (prompt + provider + model). We'll evolve schema later.
+    roots = os.environ.get("JARVIS_ROOTS")
+    root_list = [r for r in (roots.split(":" ) if roots else []) if r]
+    return handle(req.provider, req.model, req.prompt, roots=root_list or None)
 
 if __name__ == "__main__":
     import uvicorn
