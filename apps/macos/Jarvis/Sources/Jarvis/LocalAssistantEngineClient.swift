@@ -11,6 +11,19 @@ struct LocalAssistantEngineClient {
         return res.text
     }
 
+    func chat(prompt: String, provider: String, model: String) async throws -> String {
+        struct Req: Codable { let prompt: String; let max_tokens: Int; let temperature: Double; let provider: String; let model: String }
+        struct Res: Codable { let answer: String?; let type: String; let tool: String?; let error: String? }
+
+        let req = Req(prompt: prompt, max_tokens: 256, temperature: 0.2, provider: provider, model: model)
+        let res: Res = try await post(path: "/chat", body: req)
+        if let answer = res.answer { return answer }
+        if res.type == "tool_error" {
+            return "Tool error: \(res.tool ?? "") \(res.error ?? "")"
+        }
+        return "(no answer)"
+    }
+
     func summarize(text: String, provider: String, model: String) async throws -> String {
         struct Req: Codable { let text: String; let style: String; let provider: String; let model: String }
         struct Res: Codable { let summary: String }
