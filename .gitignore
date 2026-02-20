@@ -25,3 +25,6 @@ DerivedData/
 # Build artifacts
 .build/
 dist/
+
+# SwiftPM local metadata
+apps/macos/Jarvis/.swiftpm/

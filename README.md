@@ -31,6 +31,25 @@ All without sending your data to the cloud.
 - `apps/macos/Jarvis/` — SwiftUI macOS app (menu bar + floating panel + ⌘J)
 - `docs/` — architecture and roadmap
 
+## Install (easy)
+
+### Option 1: DMG (recommended)
+If you just want to install Jarvis on a Mac (no Xcode):
+- Go to **Releases**
+- Download `Jarvis.dmg`
+- Open it and drag `Jarvis.app` into `Applications`
+
+> Note: Unsigned DMG (v0). Gatekeeper may require right‑click → **Open** the first time.
+
+### Uninstall
+- Quit Jarvis
+- Delete `/Applications/Jarvis.app`
+
+Optional cleanup:
+```bash
+./scripts/uninstall.sh
+```
+
 ## Quick start (dev)
 
 ### 1) Start the local engine
